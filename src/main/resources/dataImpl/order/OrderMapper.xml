@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hotel.data.order.OrderMapper">
+
+    <select id="getAllOrders" resultMap="Order">
+        select * from OrderList
+    </select>
+    <select id="getUserOrders" resultMap="Order">
+        select * from OrderList where userId=#{userid}
+    </select>
+    <insert id="addOrder" parameterType="com.example.hotel.po.Order" useGeneratedKeys="true" keyProperty="id">
+        insert into OrderList(userId,hotelId,hotelName,checkInDate,checkOutDate,roomType,roomNum,peopleNum,haveChild,createDate,price,clientName,phoneNumber,orderState,comment)
+        values(#{userId},#{hotelId},#{hotelName},#{checkInDate},#{checkOutDate},#{roomType},#{roomNum},#{peopleNum},#{haveChild},#{createDate},#{price},#{clientName},#{phoneNumber},#{orderState},#{comment})
+    </insert>
+    <select id="getOrderById" resultMap="Order">
+        select * from OrderList where id=#{orderid}
+    </select>
+
+   <!--取消订单的数据库操作-->
+
+    <update id="annulOrder" >
+        update OrderList set orderState='已撤销' where  id=#{orderid}
+
+    </update>
+
+    <!--执行订单的数据库操作-->
+
+    <update id="executeOrder" >
+        update OrderList set orderState='已入住' where  id=#{orderid}
+
+    </update>
+
+    <update id="updateComment">
+        update OrderList set comment = #{comment}  where id = #{orderid}
+
+    </update>
+
+    <select id="getHotelComments" resultMap="Order">
+        select * from OrderList where hotelid = #{hotelid}
+    </select>
+
+   <update id="setOrderState">
+       update orderlist set orderState=#{orderState} where id=#{orderid}
+    </update>
+
+    <resultMap id="Order" type="com.example.hotel.po.Order" >
+        <id column="id" property="id"></id>
+        <result column="userId" property="userId"></result>
+        <result column="hotelId" property="hotelId"></result>
+        <result column="hotelName" property="hotelName"></result>
+        <result column="checkInDate" property="checkInDate"></result>
+        <result column="checkOutDate" property="checkOutDate"></result>
+        <result column="roomType" property="roomType"></result>
+        <result column="roomNum" property="roomNum"></result>
+        <result column="peopleNum" property="peopleNum"></result>
+        <result column="haveChild" property="haveChild"></result>
+        <result column="createDate" property="createDate"></result>
+        <result column="price" property="price"></result>
+        <result column="clientName" property="clientName"></result>
+        <result column="phoneNumber" property="phoneNumber"></result>
+        <result column="orderState" property="orderState"></result>
+        <result column="comment" property="comment"></result>
+
+    </resultMap>
+    <select id="getAbnormalOrders" resultMap="Order">
+        select * from OrderList where orderState="异常"
+    </select>
+
+    <select id="getCurrentOrders" resultMap="Order">
+        select * from OrderList where orderState="已预定"
+    </select>
+
+</mapper>
